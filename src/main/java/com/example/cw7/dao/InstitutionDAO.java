@@ -1,6 +1,7 @@
 package com.example.cw7.dao;
 
 import com.example.cw7.dto.InstitutionDTO;
+import com.example.cw7.entity.Institution;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -30,5 +31,10 @@ public class InstitutionDAO extends BaseDAO {
                 "('papa Carlos pizzeria', 'discount for 2 pizzas')," +
                 "('Joni sushi', 'delicious sushi')," +
                 "('Marry fast food', 'delicious burgers')");
+    }
+
+    public Institution getInstitutionById(Long institutionId) {
+        String sql = "SELECT * FROM institution WHERE id = " + institutionId;
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Institution.class));
     }
 }

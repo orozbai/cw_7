@@ -1,6 +1,7 @@
 package com.example.cw7.dao;
 
 import com.example.cw7.dto.DishDTO;
+import com.example.cw7.entity.Dish;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -39,5 +40,15 @@ public class DishDAO extends BaseDAO {
     public List<DishDTO> getDishesByInstitution(Long institutionId) {
         String sql = "SELECT name, typedish, price FROM dish WHERE institution_id = " + institutionId;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(DishDTO.class));
+    }
+
+    public Dish getDishById(Long dishId) {
+        String sql = "SELECT * FROM dish WHERE id = " + dishId;
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Dish.class));
+    }
+
+    public Long getInstitutionId(Long dishId) {
+        String sql = "SELECT institution_id FROM institution WHERE id = " + dishId;
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Long.class));
     }
 }
