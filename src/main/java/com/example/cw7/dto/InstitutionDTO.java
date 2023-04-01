@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class InstitutionDTO {
-    private Long name;
+    private String name;
     private String description;
 }

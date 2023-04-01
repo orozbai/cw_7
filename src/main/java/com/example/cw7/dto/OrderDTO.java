@@ -1,6 +1,5 @@
 package com.example.cw7.dto;
 
-import com.example.cw7.entity.Client;
 import com.example.cw7.entity.Dish;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDTO {
-    private Client client;
-    private Dish orderedDish;
+    private String clientName;
+    private String email;
+    private String name;
+    private String typeDish;
+    private Long price;
     private LocalDateTime orderDate;
 }

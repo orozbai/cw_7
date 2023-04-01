@@ -1,6 +1,6 @@
 package com.example.cw7.dao;
 
-import com.example.cw7.dto.OrderDTO;
+import com.example.cw7.dto.OrderByClientDTO;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -45,11 +45,11 @@ public class OrderDAO extends BaseDAO {
                 "(3, 3, '2020-03-22 18:10:25');");
     }
 
-    public List<OrderDTO> getOrdersByClientId(Long id) {
-        String sql = "SELECT * FROM orders" +
-                "JOIN dish ON orders.ordereddish = dish.id" +
-                "JOIN client ON orders.client = client.id" +
-                "WHERE client = " + id;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(OrderDTO.class));
+    public List<OrderByClientDTO> getOrdersByClientId(Long id) {
+        String sql = "SELECT dish.name as dishName, typedish, price, institution.name as fromInstitutionName, orderdate FROM orders " +
+                "INNER JOIN dish ON orders.ordereddish = dish.id " +
+                "INNER JOIN institution on institution.id = dish.institution_id " +
+                "WHERE client = ?";
+        return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(OrderByClientDTO.class));
     }
 }

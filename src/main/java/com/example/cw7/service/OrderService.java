@@ -1,7 +1,7 @@
 package com.example.cw7.service;
 
 import com.example.cw7.dao.OrderDAO;
-import com.example.cw7.dto.OrderDTO;
+import com.example.cw7.dto.OrderByClientDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class OrderService {
         orderDAO.placeOrder(clientId, dishId);
     }
 
-    public List<OrderDTO> getOrdersByClientId(Long id) {
+    public List<OrderByClientDTO> getOrdersByClientId(Long id) {
         return orderDAO.getOrdersByClientId(id);
     }
 }

@@ -12,7 +12,8 @@ import java.util.List;
 public class ClientService {
     @Autowired
     private ClientDAO clientDAO;
-    public List<Client> getByEmail(String email){
+
+    public List<Client> getByEmail(String email) {
         return clientDAO.getByEmail(email);
     }
 
@@ -22,5 +23,9 @@ public class ClientService {
 
     public void registerClient(ClientDTO clientDTO) {
         clientDAO.registerClient(clientDTO);
+    }
+
+    public boolean existsByEmail(String email) {
+        return clientDAO.existsByEmail(email);
     }
 }

@@ -1,13 +1,9 @@
 package com.example.cw7.controller;
 
-import com.example.cw7.dto.ClientDTO;
-import com.example.cw7.dto.DishDTO;
-import com.example.cw7.dto.InstitutionDTO;
-import com.example.cw7.dto.OrderDTO;
+import com.example.cw7.dto.*;
 import com.example.cw7.entity.Client;
 import com.example.cw7.entity.Dish;
 import com.example.cw7.entity.Institution;
-import com.example.cw7.entity.Order;
 import com.example.cw7.security.SecurityConfig;
 import com.example.cw7.service.ClientService;
 import com.example.cw7.service.DishService;
@@ -16,6 +12,7 @@ import com.example.cw7.service.OrderService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +47,7 @@ public class InstitutionController {
     }
 
     @PostMapping("/{institutionId}/dishes/{dishId}/order")
-    public ResponseEntity<Order> placeOrder(@PathVariable Long institutionId, @PathVariable Long dishId) {
+    public ResponseEntity<OrderDTO> placeOrder(@PathVariable Long institutionId, @PathVariable Long dishId) {
         var email = SecurityConfig.getCurrentUserEmail();
         Client client = clientService.getByEmail(email).get(0);
         if (client == null) {
@@ -63,28 +60,23 @@ public class InstitutionController {
         }
 
         Dish dish = dishService.getDishById(dishId);
-        var id = dishService.getInstitutionId(dishId);
+        Long id = dishService.getInstitutionId(dishId);
         if (dish == null || !Objects.equals(id, institutionId)) {
             return ResponseEntity.notFound().build();
         }
 
-        Order order = new Order(client.getId(), client, dish, LocalDateTime.now());
+        OrderDTO order = new OrderDTO(client.getName(), client.getEmail(), dish.getName(), dish.getTypeDish(),
+                dish.getPrice(), LocalDateTime.now());
         orderService.placeOrder(client.getId(), dish.getId());
         return ResponseEntity.ok(order);
     }
 
     @GetMapping("/client/orders")
-    public List<OrderDTO> getOrdersByClient() {
+    public List<OrderByClientDTO> getOrdersByClient() {
         Client client = clientService.getClientByEmail(SecurityConfig.getCurrentUserEmail());
         if (client == null) {
             return Collections.emptyList();
         }
         return orderService.getOrdersByClientId(client.getId());
-    }
-
-    @PostMapping("/client")
-    public ResponseEntity<ClientDTO> registerClient(@RequestBody ClientDTO clientDTO) {
-        clientService.registerClient(clientDTO);
-        return ResponseEntity.ok(clientDTO);
     }
 }

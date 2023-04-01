@@ -48,7 +48,7 @@ public class DishDAO extends BaseDAO {
     }
 
     public Long getInstitutionId(Long dishId) {
-        String sql = "SELECT id FROM institution WHERE id = " + dishId;
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Long.class));
+        String sql = "SELECT institution_id FROM dish WHERE id = " + dishId;
+        return jdbcTemplate.queryForObject(sql, Long.class);
     }
 }

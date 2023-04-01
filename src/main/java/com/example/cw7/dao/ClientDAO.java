@@ -2,12 +2,13 @@ package com.example.cw7.dao;
 
 import com.example.cw7.dto.ClientDTO;
 import com.example.cw7.entity.Client;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
 import java.util.List;
 
 @Component
@@ -25,9 +26,9 @@ public class ClientDAO extends BaseDAO {
                 "password TEXT NOT NULL);" +
                 "INSERT INTO client (name, email, password) \n" +
                 "VALUES \n" +
-                "('guest', 'guest@gmail.com', 'guest')," +
-                "('admin', 'admin@gmail.com', 'admin')," +
-                "('guest', 'guest', 'guest')");
+                "('guest', 'guest@gmail.com', '" + new BCryptPasswordEncoder().encode("guest") + "')," +
+                "('admin', 'admin@gmail.com', '" + new BCryptPasswordEncoder().encode("admin") + "')," +
+                "('guest', 'guest', '" + new BCryptPasswordEncoder().encode("guest") + "');");
     }
 
     public List<Client> getByEmail(String email) {
@@ -41,14 +42,22 @@ public class ClientDAO extends BaseDAO {
     }
 
     public void registerClient(ClientDTO clientDTO) {
-        String sql = "INSERT INTO client (name, email, password)" +
-                "VALUES (?,?,?)";
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, clientDTO.getName());
-            ps.setString(2, clientDTO.getEmail());
-            ps.setString(3, clientDTO.getPassword());
-            return ps;
-        });
+        jdbcTemplate.execute("INSERT INTO client (name, email, password) \n" +
+                "VALUES \n" +
+                "('" + clientDTO.getName() + "', '" + clientDTO.getEmail() + "'," +
+                "'" + new BCryptPasswordEncoder().encode(clientDTO.getPassword()) + "');");
+    }
+
+    public String getEmail(String email) {
+        String sql = "SELECT * FROM client WHERE email LIKE '" + email + "'";
+        try {
+            return jdbcTemplate.queryForObject(sql, String.class);
+        } catch (EmptyResultDataAccessException e) {
+            return " ";
+        }
+    }
+
+    public boolean existsByEmail(String email) {
+        return getEmail(email).contains(email);
     }
 }
