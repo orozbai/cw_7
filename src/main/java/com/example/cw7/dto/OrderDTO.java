@@ -1,5 +1,7 @@
 package com.example.cw7.dto;
 
+import com.example.cw7.entity.Client;
+import com.example.cw7.entity.Dish;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDTO {
-    private Long id;
-    private Long client;
-    private Long orderedDish;
+    private Client client;
+    private Dish orderedDish;
     private LocalDateTime orderDate;
 }

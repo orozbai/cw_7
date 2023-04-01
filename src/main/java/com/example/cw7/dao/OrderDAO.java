@@ -1,5 +1,7 @@
 package com.example.cw7.dao;
 
+import com.example.cw7.dto.OrderDTO;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class OrderDAO extends BaseDAO {
@@ -40,5 +43,13 @@ public class OrderDAO extends BaseDAO {
                 "(1, 1, '2018-06-22 19:10:25')," +
                 "(2, 2, '2019-07-20 15:10:25')," +
                 "(3, 3, '2020-03-22 18:10:25');");
+    }
+
+    public List<OrderDTO> getOrdersByClientId(Long id) {
+        String sql = "SELECT * FROM orders" +
+                "JOIN dish ON orders.ordereddish = dish.id" +
+                "JOIN client ON orders.client = client.id" +
+                "WHERE client = " + id;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(OrderDTO.class));
     }
 }

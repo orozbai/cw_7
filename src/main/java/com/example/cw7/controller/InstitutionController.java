@@ -1,7 +1,9 @@
 package com.example.cw7.controller;
 
+import com.example.cw7.dto.ClientDTO;
 import com.example.cw7.dto.DishDTO;
 import com.example.cw7.dto.InstitutionDTO;
+import com.example.cw7.dto.OrderDTO;
 import com.example.cw7.entity.Client;
 import com.example.cw7.entity.Dish;
 import com.example.cw7.entity.Institution;
@@ -11,12 +13,14 @@ import com.example.cw7.service.ClientService;
 import com.example.cw7.service.DishService;
 import com.example.cw7.service.InstitutionService;
 import com.example.cw7.service.OrderService;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +49,7 @@ public class InstitutionController {
         return dishService.getDishesByInstitution(institutionId);
     }
 
+    //не забыть закрыть доступ к заказу пока клиент не залогинется
     @PostMapping("/{institutionId}/dishes/{dishId}/order")
     public ResponseEntity<Order> placeOrder(@PathVariable Long institutionId, @PathVariable Long dishId) {
         var email = SecurityConfig.getCurrentUserEmail();
@@ -67,5 +72,21 @@ public class InstitutionController {
         Order order = new Order(client.getId(), client, dish, LocalDateTime.now());
         orderService.placeOrder(client.getId(), dish.getId());
         return ResponseEntity.ok(order);
+    }
+
+    //закрыть доступ тоже
+    @GetMapping("/client/orders")
+    public List<OrderDTO> getOrdersByClient() {
+        Client client = clientService.getClientByEmail(SecurityConfig.getCurrentUserEmail());
+        if (client == null) {
+            return Collections.emptyList();
+        }
+        return orderService.getOrdersByClientId(client.getId());
+    }
+
+    @PostMapping("/client")
+    public ResponseEntity<ClientDTO> registerClient(@RequestBody ClientDTO clientDTO) {
+        clientService.registerClient(clientDTO);
+        return ResponseEntity.ok(clientDTO);
     }
 }
