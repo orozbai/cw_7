@@ -22,7 +22,7 @@ public class DishDAO extends BaseDAO {
                 "name TEXT NOT NULL," +
                 "typedish TEXT NOT NULL," +
                 "price INTEGER NOT NULL," +
-                "institution_id INTEGER NOT NULL" +
+                "institution_id INTEGER NOT NULL," +
                 "FOREIGN KEY (institution_id) REFERENCES institution(id) ON DELETE CASCADE );" +
                 "INSERT INTO dish (name, typedish, price, institution_id) \n" +
                 "VALUES \n" +
@@ -48,7 +48,7 @@ public class DishDAO extends BaseDAO {
     }
 
     public Long getInstitutionId(Long dishId) {
-        String sql = "SELECT institution_id FROM institution WHERE id = " + dishId;
+        String sql = "SELECT id FROM institution WHERE id = " + dishId;
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Long.class));
     }
 }

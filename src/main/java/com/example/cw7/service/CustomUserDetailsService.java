@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    private final ClientService userService;
+    private final ClientService clientService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Client user = null;
-        user = userService.getByEmail(email).get(0);
+        user = clientService.getByEmail(email).get(0);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
