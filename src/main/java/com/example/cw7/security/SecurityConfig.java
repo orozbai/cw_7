@@ -35,7 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/task/**")
+                .antMatchers("/institution/client/orders",
+                        "/institution/{institutionId}/dishes/{dishId}/order")
                 .fullyAuthenticated()
                 .anyRequest()
                 .permitAll()
@@ -62,10 +63,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static String getCurrentUserEmail() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getEmail();
-    }
-
-    public static Long getCurrentUserId() {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails.getId();
     }
 }

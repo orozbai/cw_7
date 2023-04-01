@@ -49,7 +49,6 @@ public class InstitutionController {
         return dishService.getDishesByInstitution(institutionId);
     }
 
-    //не забыть закрыть доступ к заказу пока клиент не залогинется
     @PostMapping("/{institutionId}/dishes/{dishId}/order")
     public ResponseEntity<Order> placeOrder(@PathVariable Long institutionId, @PathVariable Long dishId) {
         var email = SecurityConfig.getCurrentUserEmail();
@@ -74,7 +73,6 @@ public class InstitutionController {
         return ResponseEntity.ok(order);
     }
 
-    //закрыть доступ тоже
     @GetMapping("/client/orders")
     public List<OrderDTO> getOrdersByClient() {
         Client client = clientService.getClientByEmail(SecurityConfig.getCurrentUserEmail());
